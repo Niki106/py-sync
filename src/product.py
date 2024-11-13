@@ -32,9 +32,10 @@ class ProductUpdater:
             
             count = 0
             for pinfo in product_info_data:
+
                 count = count + 1
-                if (count < 10000) or (count > 50000):
-                    break
+                if (count < 10000): continue
+                if (count > 50000): break
 
                 product_name = pinfo['name']
                 product_sku = pinfo['sku']
