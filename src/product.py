@@ -33,7 +33,7 @@ class ProductUpdater:
             count = 0
             for pinfo in product_info_data:
                 count = count + 1
-                if (count < 1) or (count > 10000):
+                if (count < 10000) or (count > 50000):
                     break
 
                 product_name = pinfo['name']
@@ -63,20 +63,69 @@ class ProductUpdater:
                 else:
                     print(f"Error creating product {product_name}: {response.text}")
 
+    # Get product variations from BigBuy and create in BigCommerce
+    def create_variations_in_bigcommerce(self, product_info_file):
+        with open(product_info_file, 'r') as f:
+            product_info_data = json.load(f)
+            
+            for pinfo in product_info_data:
+                old_product_id = pinfo['id']
+                product_sku = pinfo['sku']
 
-    def fetch_new_products_from_bigbuy(self):
-        url = f"{self.bigbuy_base_url}new-products.json"
+                # Get new product id from sku
+                url = f"{self.base_url}products?keyword={product_sku}"
+                response = requests.get(url, headers=self.headers)
+                product_data = response.json
+                new_product_id = product_data['data'][0]['id']
+
+                # Get the product variations
+                url = f"{self.bigbuy_base_url}productvariations/{old_product_id}"
+                response = requests.get(url, headers=self.bigbuy_headers)
+                variations = response.json
+                
+                # Create variations in BigCommerce
+                for variation in variations:
+                    price = variation['inShopsPrice']
+                    sale_price = variation['wholesalePrice']
+                    retail_price = variation['retailPrice']
+                    sku = variation['sku']
+                    width = variation['width']
+                    height = variation['height']
+                    depth = variation['depth']
+
+                    # Prepare BigCommerce product data
+                    bigcommerce_data = {
+                        "price": price,
+                        "sale_price": sale_price,
+                        "retail_price": retail_price,
+                        "sku": sku,
+                        "weight": width,
+                        "height": height,
+                        "depth": depth,
+                        "product_id": new_product_id
+                    }
+
+                    # Create variation in BigCommerce
+                    url = f"{self.base_url}products/{new_product_id}/variants"
+                    response = requests.post(url, headers=self.headers, json=bigcommerce_data)
+                    if response.status_code == 200:
+                        print(f"Variant for {new_product_id} created successfully.")
+                    else:
+                        print(f"Error creating product {new_product_id}: {response.text}")
         
-        try:
-            bigbuy_response = requests.get(url, headers=self.bigbuy_headers)
-            bigbuy_data = bigbuy_response.json()
-            return bigbuy_data
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON response: {e}")
-            return None  # Or handle the error differently, e.g., log the error, retry the request, etc.
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching data from BigBuy: {e}")
-            return None
+
+
+                
+                try:
+                    bigbuy_response = requests.get(url, headers=self.bigbuy_headers)
+                    bigbuy_data = bigbuy_response.json()
+                    return bigbuy_data
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON response: {e}")
+                    return None  # Or handle the error differently, e.g., log the error, retry the request, etc.
+                except requests.exceptions.RequestException as e:
+                    print(f"Error fetching data from BigBuy: {e}")
+                    return None
 
     
     def update_bigcommerce_object(self, object_type, object_id, data):
