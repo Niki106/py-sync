@@ -17,7 +17,7 @@ class VariantUpdater:
 
     # Read products from file and save to BigCommerce.
     def insert_variants_to_bigcommerce(self, variant_file):
-        with open(product_file, 'r') as f:
+        with open(variant_file, 'r') as f:
             product_data = json.load(f)
             
             # Make dictionary with description and id
