@@ -1,0 +1,49 @@
+[
+    {
+        "manufacturer": 1892,
+        "id": 1021919,
+        "sku": "S91109471",
+        "ean13": "0196786155253",
+        "weight": 3.025,
+        "height": 52,
+        "width": 34.5,
+        "depth": 7,
+        "taxonomy": 19904,
+        "dateUpd": "2024-11-12 07:14:37",
+        "category": 2797,
+        "dateUpdDescription": "2024-11-12 07:14:38",
+        "dateUpdImages": "2024-11-12 07:14:28",
+        "dateUpdStock": "2024-11-12 07:14:37",
+        "wholesalePrice": 1097.58,
+        "retailPrice": 1180.19,
+        "dateAdd": "2024-11-12 07:15:07",
+        "video": "0",
+        "active": 1,
+        "attributes": false,
+        "categories": true,
+        "images": true,
+        "taxRate": 21,
+        "taxId": 1,
+        "inShopsPrice": 1311.32,
+        "condition": "NEW",
+        "logisticClass": "A",
+        "tags": true,
+        "dateUpdProperties": null,
+        "dateUpdCategories": null,
+        "priceLargeQuantities": [
+            {
+                "id": 9595044,
+                "quantity": 3,
+                "price": 1089.72
+            },
+            {
+                "id": 9595045,
+                "quantity": 6,
+                "price": 1085.79
+            }
+        ],
+        "intrastat": "84713000",
+        "partNumber": "85D61EA",
+        "canon": null
+    }
+]
