@@ -10,8 +10,8 @@ BIGBUY_API_KEY = "NGQxYmVkZGU1ZTIxMGJjMzg4Yzk2MDNhYzUxNzhlNTNkYjAyMDQzYmU4YWFmYj
 
 if __name__ == '__main__':
     updater = ProductUpdater(STORE_HASH, API_TOKEN, BIGBUY_API_KEY)
-    productFile = "D:\\Work\\Python\\Abdulrahman\\Data\\BigBuy\\Products.json"
-    productInfoFile = "D:\\Work\\Python\\Abdulrahman\\Data\\BigBuy\\ProductsInfo.json"
+    productFile = "Products.json"
+    productInfoFile = "ProductsInfo.json"
     data = updater.insert_products_to_bigcommerce(productFile, productInfoFile)
     
     
