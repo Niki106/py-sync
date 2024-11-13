@@ -31,7 +31,7 @@ class ProductUpdater:
             product_info_data = json.load(f)
             
             for pinfo in product_info_data:
-                if pinfo['id'] < 25008:
+                if pinfo['id'] < 27238:
                     continue
 
                 product_name = pinfo['name']
