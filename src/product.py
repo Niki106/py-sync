@@ -29,9 +29,11 @@ class ProductUpdater:
 
         with open(product_info_file, 'r') as f:
             product_info_data = json.load(f)
-
+            
+            count = 0
             for pinfo in product_info_data:
-                if pinfo['id'] < 17515:
+                count = count + 1
+                if count < 2509:
                     continue
 
                 product_name = pinfo['name']
