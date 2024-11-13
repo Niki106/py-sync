@@ -33,7 +33,7 @@ class ProductUpdater:
             count = 0
             for pinfo in product_info_data:
                 count = count + 1
-                if count < 4909:
+                if count < 12401:
                     continue
 
                 product_name = pinfo['name']
