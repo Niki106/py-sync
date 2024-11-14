@@ -31,13 +31,7 @@ class ProductUpdater:
         with open(product_info_file, 'r') as f:
             product_info_data = json.load(f)
             
-            count = 0
-            for pinfo in product_info_data:
-
-                count = count + 1
-                if (count < 100001): continue
-                if (count > 200000): break
-
+            for pinfo in product_info_data[100100:200001]:
                 product_name = pinfo['name']
                 product_sku = pinfo['sku']
                 product_categories = [2158]
@@ -61,9 +55,9 @@ class ProductUpdater:
                 url = f"{self.base_url}products"
                 response = requests.post(url, headers=self.headers, json=bigcommerce_data)
                 if response.status_code == 200:
-                    print(f"Product {product_name} created successfully.")
+                    print(f"Product {product_sku} created successfully.")
                 else:
-                    print(f"Error creating product {product_name}: {response.text}")
+                    print(f"Error creating product {product_sku}: {response.text}")
 
     # Get product variations from BigBuy and create in BigCommerce
     def create_variations_in_bigcommerce(self, product_info_file):

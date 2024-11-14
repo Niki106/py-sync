@@ -8,20 +8,22 @@ API_TOKEN = "t4iu0pxpzxck0h5azrwmy8u3w9994q2"
 productPath = "D:\\Work\\Python\\Abdulrahman\\Data\\BigBuy"
 
 def filter_product_info():
-    merged_data = []
+    new_data = []
+    count = 0
     for i in range(6):
         file_path = f"{productPath}\\ProductsInfo_{i}.json"
         with open(file_path, 'r') as f:
             data = json.load(f)
             filtered_data = []
             for item in data:
-                filtered_item = {"id": item['id'], "sku": item['sku'], "name": item['name']}
+                filtered_item = {"id": item['id'], "sku": item['sku'], "name": item['name'], "index": count}
                 filtered_data.append(filtered_item)
-            merged_data.extend(filtered_data)
+                count = count + 1
+            new_data.extend(filtered_data)
         
     file_path = f"{productPath}\\ProductsInfo.json"
     with open(file_path, 'w') as f:
-        json.dump(merged_data, f, indent=4)
+        json.dump(new_data, f, indent=4)
 
 def filter_product():
     merged_data = []
@@ -112,10 +114,12 @@ def get_new_product_id(pinfo_file, image_file):
         json.dump(id_mapping, f, indent=4)
 
 def main():
+    filter_product_info()
     # get_sku(args.number)  
-    productInfoFile = "ProductsInfo.json"
-    imageFile = "Image.json"
-    get_new_product_id(productInfoFile, imageFile)
+
+    # productInfoFile = "ProductsInfo.json"
+    # imageFile = "Image.json"
+    # get_new_product_id(productInfoFile, imageFile)
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='A simple argument parser')
