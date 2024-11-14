@@ -82,13 +82,7 @@ def get_new_product_id(pinfo_file, image_file):
     with open(image_file, 'r') as f:
         product_image_data = json.load(f)
         
-        count = 0
-        for product_image in product_image_data:
-
-            count = count + 1
-            # if (count < 2000): continue
-            if (count > 10000): break
-        
+        for product_image in product_image_data[10000:100001]:
             old_product_id = product_image['id']
             product_sku = product_sku_dict.get(str(old_product_id), '')
             if product_sku == '': 
@@ -114,12 +108,12 @@ def get_new_product_id(pinfo_file, image_file):
         json.dump(id_mapping, f, indent=4)
 
 def main():
-    filter_product_info()
+    # filter_product_info()
     # get_sku(args.number)  
 
-    # productInfoFile = "ProductsInfo.json"
-    # imageFile = "Image.json"
-    # get_new_product_id(productInfoFile, imageFile)
+    productInfoFile = "ProductsInfo.json"
+    imageFile = "Image.json"
+    get_new_product_id(productInfoFile, imageFile)
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='A simple argument parser')
