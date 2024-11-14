@@ -1,4 +1,5 @@
 import json
+import argparse
 
 productPath = "D:\\Work\\Python\\Abdulrahman\\Data\\BigBuy"
 
@@ -46,4 +47,25 @@ def merge_images():
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 
-merge_images()
+def get_sku(n):
+    file_path = f"ProductsInfo.json"
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+        count = 0
+        for item in data:
+            count = count + 1
+            if count == n:
+                print(item['sku'])
+                break
+    
+
+
+def main(args):
+    # print(f"Hello, {args.name}!")
+    get_sku(args.number)  
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='A simple argument parser')
+    parser.add_argument('-n', '--number', type=int, required=True, help='Number')
+    args = parser.parse_args()
+    main(args)

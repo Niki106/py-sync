@@ -173,12 +173,14 @@ class ProductUpdater:
             for product_image in product_image_data:
 
                 count = count + 1
-                if (count < 1251): continue
-                if (count > 2000): break
-                print(count)
+                if (count < 2000): continue
+                if (count > 10000): break
             
                 old_product_id = product_image['id']
                 product_sku = product_sku_dict.get(str(old_product_id), '')
+                if product_sku == '': continue
+                
+                print(count, old_product_id, product_sku);
 
                 # Get new product id by sku
                 url = f"{self.base_url}products?keyword={product_sku}"
@@ -204,7 +206,7 @@ class ProductUpdater:
                     if response.status_code == 200:
                         print(f"Image for {new_product_id} created successfully.")
                     else:
-                        print(f"Error creating variation {new_product_id}: {response.text}")
+                        print(f"Error creating image {new_product_id}: {response.text}")
                     
                     break
 
