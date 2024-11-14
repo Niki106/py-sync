@@ -86,16 +86,13 @@ def get_new_product_id(pinfo_file, image_file):
             old_product_id = product_image['id']
             product_sku = product_sku_dict.get(str(old_product_id), '')
             if product_sku == '': 
-                print("No new id for old id: ", old_product_id)
                 continue
 
             # Get new product id by sku
             url = f"{base_url}products?keyword={product_sku}"
             response = requests.get(url, headers=headers)
             product_data = response.json()
-            print(response.status_code)
             if len(product_data['data']) == 0: 
-                print("No new id for sku: ", product_sku)
                 continue
 
             new_product_id = product_data['data'][0]['id']
