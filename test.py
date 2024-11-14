@@ -84,8 +84,8 @@ def get_new_product_id(pinfo_file, image_file):
         for product_image in product_image_data:
 
             count = count + 1
-            if (count < 2000): continue
-            if (count > 2100): break
+            # if (count < 2000): continue
+            if (count > 10000): break
         
             old_product_id = product_image['id']
             product_sku = product_sku_dict.get(str(old_product_id), '')
