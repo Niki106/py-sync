@@ -173,8 +173,8 @@ class ProductUpdater:
             for product_image in product_image_data:
 
                 count = count + 1
-                if (count < 1001): continue
-                if (count > 10000): break
+                if (count < 1251): continue
+                if (count > 2000): break
                 print(count)
             
                 old_product_id = product_image['id']
