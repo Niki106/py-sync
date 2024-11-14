@@ -12,8 +12,8 @@ if __name__ == '__main__':
     productFile = "Products.json"
     productInfoFile = "ProductsInfo.json"
     imageFile = "Image.json"
-    data = updater.insert_products_to_bigcommerce(productFile, productInfoFile)
+    # data = updater.insert_products_to_bigcommerce(productFile, productInfoFile)
     # data = updater.create_variations_in_bigcommerce(productInfoFile)
-    # data = updater.create_images_in_bigcommerce(productInfoFile, imageFile)
+    data = updater.create_images_in_bigcommerce(productInfoFile, imageFile)
     
     
