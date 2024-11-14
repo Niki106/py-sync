@@ -34,4 +34,16 @@ def filter_product():
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 
-filter_product()
+def merge_images():
+    merged_data = []
+    for i in range(6):
+        file_path = f"{productPath}\\Images_{i}.json"
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+            merged_data.extend(data)
+        
+    file_path = f"{productPath}\\Images.json"
+    with open(file_path, 'w') as f:
+        json.dump(merged_data, f, indent=4)
+
+merge_images()
