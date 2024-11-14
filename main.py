@@ -12,7 +12,7 @@ if __name__ == '__main__':
     updater = ProductUpdater(STORE_HASH, API_TOKEN, BIGBUY_API_KEY)
     productFile = "Products.json"
     productInfoFile = "ProductsInfo.json"
-    imageFile = "Images.json"
+    imageFile = "Image.json"
     # data = updater.insert_products_to_bigcommerce(productFile, productInfoFile)
     # data = updater.create_variations_in_bigcommerce(productInfoFile)
     data = updater.create_images_in_bigcommerce(productInfoFile, imageFile)
