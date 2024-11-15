@@ -98,6 +98,7 @@ def get_new_product_id(pinfo_file, image_file):
             new_product_id = product_data['data'][0]['id']
 
             id_mapping.append({"old_id": old_product_id, "new_id": new_product_id})
+            print(old_product_id, new_product_id)
 
 
     file_path = f"ID_Mapping.json"
