@@ -82,7 +82,7 @@ def get_new_product_id(pinfo_file, image_file):
     with open(image_file, 'r') as f:
         product_image_data = json.load(f)
         
-        for product_image in product_image_data[10000:100001]:
+        for product_image in product_image_data[10000:20001]:
             old_product_id = product_image['id']
             product_sku = product_sku_dict.get(str(old_product_id), '')
             if product_sku == '': 
