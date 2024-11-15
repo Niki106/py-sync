@@ -70,24 +70,14 @@ def get_new_product_id(pinfo_file, image_file):
         "X-Auth-Token": f"{API_TOKEN}"
     }
 
+    id_mapping = []
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        # Make dictionary with id and sku
-        product_sku_dict = {}
-        for pinfo in pinfo_data:
-            product_sku_dict[str(pinfo['id'])] = pinfo['sku']
-
-    id_mapping = []
-    with open(image_file, 'r') as f:
-        product_image_data = json.load(f)
-        
-        for product_image in product_image_data[10000:20001]:
-            old_product_id = product_image['id']
-            product_sku = product_sku_dict.get(str(old_product_id), '')
-            if product_sku == '': 
-                continue
-
+        for product_info in pinfo_data[10000:20001]:
+            old_product_id = product_info['id']
+            product_sku = product_info['sku']
+            
             # Get new product id by sku
             url = f"{base_url}products?keyword={product_sku}"
             response = requests.get(url, headers=headers)
