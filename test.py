@@ -74,14 +74,18 @@ def get_new_product_id(pinfo_file, image_file):
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[80000:90001]:
+        for product_info in pinfo_data[10000:20001]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
             
             # Get new product id by sku
             url = f"{base_url}products?keyword={product_sku}"
             response = requests.get(url, headers=headers)
-            product_data = response.json()
+            try:
+                product_data = response.json()
+            except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
+                continue
+            
             if len(product_data['data']) == 0: 
                 continue
 
@@ -91,7 +95,7 @@ def get_new_product_id(pinfo_file, image_file):
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping8.json"
+    file_path = f"ID_Mapping1.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 
