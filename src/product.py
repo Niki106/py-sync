@@ -31,7 +31,7 @@ class ProductUpdater:
         with open(product_info_file, 'r') as f:
             product_info_data = json.load(f)
             
-            for pinfo in product_info_data[100100:200001]:
+            for pinfo in product_info_data[200000:300000]:
                 product_name = pinfo['name']
                 product_sku = pinfo['sku']
                 product_categories = [2158]
@@ -151,45 +151,29 @@ class ProductUpdater:
                     break
 
     # Get product images from file and save.
-    def create_images_in_bigcommerce(self, product_info_file, image_file):
-        with open(product_info_file, 'r') as f:
-            product_data = json.load(f)
+    def create_images_in_bigcommerce(self, id_map_file, image_file):
+        with open(id_map_file, 'r') as f:
+            map_data = json.load(f)
             
-            # Make dictionary with id and sku
-            product_sku_dict = {}
-            for product in product_data:
-                product_sku_dict[str(product['id'])] = product['sku']
+            # Make dictionary with old id and new id
+            id_dict = {}
+            for map in map_data:
+                id_dict[str(map['old_id'])] = map['new_id']
 
         with open(image_file, 'r') as f:
             product_image_data = json.load(f)
             
-            count = 0
-            for product_image in product_image_data:
-
-                count = count + 1
-                if (count < 2000): continue
-                if (count > 10000): break
-            
+            for product_image in product_image_data[2100:100001]:
                 old_product_id = product_image['id']
-                product_sku = product_sku_dict.get(str(old_product_id), '')
-                if product_sku == '': continue
+                new_product_id = id_dict.get(str(old_product_id), 0)
+                if new_product_id == 0: continue
                 
-                print(count, old_product_id, product_sku);
-
-                # Get new product id by sku
-                url = f"{self.base_url}products?keyword={product_sku}"
-                response = requests.get(url, headers=self.headers)
-                product_data = response.json()
-                if len(product_data['data']) == 0: continue
-                new_product_id = product_data['data'][0]['id']
-
                 # Create product image in BigCommerce
                 images = product_image['images']
                 for image in images:
                     img_url = image['url']
                     is_thumbnail = True
                     
-                    # Prepare BigCommerce product data
                     bigcommerce_data = {
                         "image_url": img_url,
                         "is_thumbnail": is_thumbnail
