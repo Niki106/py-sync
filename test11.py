@@ -41,15 +41,15 @@ def filter_product():
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 
-def merge_id_mapping():
+def merge_images():
     merged_data = []
-    for i in range(10):
-        file_path = f"{productPath}\\ID_Mapping_{i}.json"
+    for i in range(6):
+        file_path = f"{productPath}\\Images_{i}.json"
         with open(file_path, 'r') as f:
             data = json.load(f)
             merged_data.extend(data)
         
-    file_path = f"{productPath}\\ID_Mapping.json"
+    file_path = f"{productPath}\\Images.json"
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 
@@ -74,7 +74,7 @@ def get_new_product_id(pinfo_file, image_file):
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[20000:30001]:
+        for product_info in pinfo_data[110000:120001]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
             
@@ -95,7 +95,7 @@ def get_new_product_id(pinfo_file, image_file):
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping2.json"
+    file_path = f"ID_Mapping11.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 
