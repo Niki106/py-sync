@@ -70,6 +70,21 @@ def get_new_product_id(pinfo_file, image_file):
         "X-Auth-Token": f"{API_TOKEN}"
     }
 
+    def fetch_by_sku(product_sku):
+        url = f"{base_url}products?keyword={product_sku}"
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()  # Raise an exception for error HTTP statuses
+            product_data = response.json()
+            if len(product_data['data']) == 0:
+                print(f"No product data found for SKU: {product_sku}")
+                return None
+
+            return product_data
+        except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
+            print(f"Error fetching product data for SKU {product_sku}: {str(e)}")
+            return None
+
     id_mapping = []
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
@@ -77,19 +92,12 @@ def get_new_product_id(pinfo_file, image_file):
         for product_info in pinfo_data[100000:110001]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
-            
-            # Get new product id by sku
-            url = f"{base_url}products?keyword={product_sku}"
-            response = requests.get(url, headers=headers)
-            try:
-                product_data = response.json()
-            except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
-                continue
-            
-            if len(product_data['data']) == 0: 
-                continue
 
-            new_product_id = product_data['data'][0]['id']
+            product_data = fetch_by_sku(product_sku)
+            if product_data:
+                new_product_id = product_data['data'][0]['id']
+            else:
+                continue
 
             id_mapping.append({"old_id": old_product_id, "new_id": new_product_id})
             print(old_product_id, new_product_id)

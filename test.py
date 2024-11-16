@@ -41,15 +41,15 @@ def filter_product():
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 
-def merge_id_mapping():
+def merge_images():
     merged_data = []
-    for i in range(10):
-        file_path = f"{productPath}\\ID_Mapping_{i}.json"
+    for i in range(6):
+        file_path = f"{productPath}\\Images_{i}.json"
         with open(file_path, 'r') as f:
             data = json.load(f)
             merged_data.extend(data)
         
-    file_path = f"{productPath}\\ID_Mapping.json"
+    file_path = f"{productPath}\\Images.json"
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 
@@ -70,32 +70,40 @@ def get_new_product_id(pinfo_file, image_file):
         "X-Auth-Token": f"{API_TOKEN}"
     }
 
+    def fetch_by_sku(product_sku):
+        url = f"{base_url}products?keyword={product_sku}"
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()  # Raise an exception for error HTTP statuses
+            product_data = response.json()
+            if len(product_data['data']) == 0:
+                print(f"No product data found for SKU: {product_sku}")
+                return None
+
+            return product_data
+        except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
+            print(f"Error fetching product data for SKU {product_sku}: {str(e)}")
+            return None
+
     id_mapping = []
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[20000:30001]:
+        for product_info in pinfo_data[10000:20001]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
-            
-            # Get new product id by sku
-            url = f"{base_url}products?keyword={product_sku}"
-            response = requests.get(url, headers=headers)
-            try:
-                product_data = response.json()
-            except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
-                continue
-            
-            if len(product_data['data']) == 0: 
-                continue
 
-            new_product_id = product_data['data'][0]['id']
+            product_data = fetch_by_sku(product_sku)
+            if product_data:
+                new_product_id = product_data['data'][0]['id']
+            else:
+                continue
 
             id_mapping.append({"old_id": old_product_id, "new_id": new_product_id})
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping2.json"
+    file_path = f"ID_Mapping11.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 
@@ -104,8 +112,7 @@ def main():
     # get_sku(args.number)  
 
     productInfoFile = "ProductsInfo.json"
-    imageFile = "Image.json"
-    get_new_product_id(productInfoFile, imageFile)
+    get_new_product_id(productInfoFile)
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='A simple argument parser')
