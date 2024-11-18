@@ -27,12 +27,12 @@ def filter_product_info():
 
 def filter_product():
     merged_data = []
-    for i in range(6):
-        file_path = f"{productPath}\\Products_{5 - i}.json"
+    for i in range(7):
+        file_path = f"{productPath}\\Products_{6 - i}.json"
         with open(file_path, 'r') as f:
             data = json.load(f)
             filtered_data = []
-            for item in data:
+            for index, item in enumerate(reversed(data)):
                 filtered_item = {"id": item['id'], "weight": item['weight'], "retailPrice": item['retailPrice']}
                 filtered_data.append(filtered_item)
             merged_data.extend(filtered_data)

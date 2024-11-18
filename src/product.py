@@ -18,37 +18,27 @@ class ProductUpdater:
 
     # Read products from file and save to BigCommerce.
     def insert_products_to_bigcommerce(self, product_file, product_info_file):
-        # with open(product_file, 'r') as f:
-        #     product_data = json.load(f)
+        with open(product_file, 'r') as f:
+            product_data = json.load(f)
             
-        #     # Make dictionary with description and id
-        #     product_price_dict = {}
-        #     product_weight_dict = {}
-        #     for product in product_data:
-        #         product_price_dict[str(product['id'])] = product['retailPrice']
-        #         product_weight_dict[str(product['id'])] = product['weight']
+            # Make dictionary with description and id
+            product_price_dict = {}
+            product_weight_dict = {}
+            for product in product_data:
+                product_price_dict[str(product['id'])] = product['retailPrice']
+                product_weight_dict[str(product['id'])] = product['weight']
 
         with open(product_info_file, 'r') as f:
             product_info_data = json.load(f)
             
-            for pinfo in product_info_data[264001:294253]:
+            for pinfo in product_info_data[294002:294253]:
                 product_name = pinfo['name']
                 product_sku = pinfo['sku']
                 product_categories = [2158]
-                # product_price = product_price_dict.get(str(pinfo['id']), 0)
-                # product_weight = product_weight_dict.get(str(pinfo['id']), 0)
+                product_price = product_price_dict.get(str(pinfo['id']), 0)
+                product_weight = product_weight_dict.get(str(pinfo['id']), 0)
                 product_type = 'physical'
                 product_availability = 'available'
-
-                # Get product price and weight from BigBuy
-                url = f"{self.bigbuy_base_url}products?keyword={product_sku}"
-                # response = requests.get(url, headers=self.bigbuy_headers)
-                # data = response.json()
-                # product_weight = data['data'][0]['weight']
-                # product_price = data['data'][0]['retail_price']
-                # print(product_sku, product_weight, product_price)
-                print(url)
-                break
 
                 # Prepare BigCommerce product data
                 bigcommerce_data = {
