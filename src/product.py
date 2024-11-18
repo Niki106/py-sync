@@ -44,8 +44,8 @@ class ProductUpdater:
                 url = f"{self.bigbuy_base_url}products?keyword={product_sku}"
                 response = requests.get(url, headers=self.bigbuy_headers)
                 data = response.json()
-                product_weight = data['data']['weight']
-                product_price = data['data'] ['retail_price']
+                product_weight = data['data'][0]['weight']
+                product_price = data['data'][0]['retail_price']
                 print(product_sku, product_weight, product_price)
                 continue
 
