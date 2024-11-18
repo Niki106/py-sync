@@ -9,12 +9,13 @@ BIGBUY_API_KEY = "NGQxYmVkZGU1ZTIxMGJjMzg4Yzk2MDNhYzUxNzhlNTNkYjAyMDQzYmU4YWFmYj
 
 if __name__ == '__main__':
     updater = ProductUpdater(STORE_HASH, API_TOKEN, BIGBUY_API_KEY)
-    productFile = "Products.json"
-    productInfoFile = "ProductsInfo.json"
-    imageFile = "Image.json"
-    idMapFile = "ID_Mapping.json"
-    data = updater.insert_products_to_bigcommerce(productFile, productInfoFile)
-    # data = updater.create_variations_in_bigcommerce(productInfoFile)
-    # data = updater.create_images_in_bigcommerce(idMapFile, imageFile)
+    product_file = "Products.json"
+    prodcut_info_file = "ProductsInfo.json"
+    image_file = "ImagesWithID.json"
+    id_map_file = "ID_Mapping.json"
+    variation_file = "VariationsSorted.json"
+    data = updater.insert_products_to_bigcommerce(product_file, prodcut_info_file)
+    # data = updater.create_images_in_bigcommerce(id_map_file, image_file)
+    # data = updater.create_variations_in_bigcommerce(variation_file)
     
     

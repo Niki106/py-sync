@@ -18,27 +18,36 @@ class ProductUpdater:
 
     # Read products from file and save to BigCommerce.
     def insert_products_to_bigcommerce(self, product_file, product_info_file):
-        with open(product_file, 'r') as f:
-            product_data = json.load(f)
+        # with open(product_file, 'r') as f:
+        #     product_data = json.load(f)
             
-            # Make dictionary with description and id
-            product_price_dict = {}
-            product_weight_dict = {}
-            for product in product_data:
-                product_price_dict[str(product['id'])] = product['retailPrice']
-                product_weight_dict[str(product['id'])] = product['weight']
+        #     # Make dictionary with description and id
+        #     product_price_dict = {}
+        #     product_weight_dict = {}
+        #     for product in product_data:
+        #         product_price_dict[str(product['id'])] = product['retailPrice']
+        #         product_weight_dict[str(product['id'])] = product['weight']
 
         with open(product_info_file, 'r') as f:
             product_info_data = json.load(f)
             
-            for pinfo in product_info_data[200000:300000]:
+            for pinfo in product_info_data[264001:294253]:
                 product_name = pinfo['name']
                 product_sku = pinfo['sku']
                 product_categories = [2158]
-                product_price = product_price_dict.get(str(pinfo['id']), 0)
-                product_weight = product_weight_dict.get(str(pinfo['id']), 0)
+                # product_price = product_price_dict.get(str(pinfo['id']), 0)
+                # product_weight = product_weight_dict.get(str(pinfo['id']), 0)
                 product_type = 'physical'
                 product_availability = 'available'
+
+                # Get product price and weight from BigBuy
+                url = f"{self.bigbuy_base_url}products?keyword={product_sku}"
+                response = requests.get(url, headers=self.bigbuy_headers)
+                data = response.json()
+                product_weight = data['data']['weight']
+                product_price = data['data'] ['retail_price']
+                print(product_sku, product_weight, product_price)
+                continue
 
                 # Prepare BigCommerce product data
                 bigcommerce_data = {
@@ -59,97 +68,11 @@ class ProductUpdater:
                 else:
                     print(f"Error creating product {product_sku}: {response.text}")
 
-    # Get product variations from BigBuy and create in BigCommerce
-    def create_variations_in_bigcommerce(self, product_info_file):
-        with open(product_info_file, 'r') as f:
-            product_info_data = json.load(f)
-            
-            for pinfo in product_info_data[500:10001]:
-                old_product_id = pinfo['id']
-                product_sku = pinfo['sku']
-
-                # Get new product id from sku
-                url = f"{self.base_url}products?keyword={product_sku}"
-                response = requests.get(url, headers=self.headers)
-                product_data = response.json()
-                if len(product_data['data']) == 0: continue
-                new_product_id = product_data['data'][0]['id']
-
-                # Get the product variations
-                time.sleep(3)
-                url = f"{self.bigbuy_base_url}productvariations/{old_product_id}"
-                response = requests.get(url, headers=self.bigbuy_headers)
-                if response.status_code != 200: continue
-                
-                variations = response.json()
-
-                # Create project option
-                bigcommerce_data = {
-                    "display_name": "Default Ooption",
-                    "type": "radio_buttons",
-                    "option_values": [
-                        {
-                            "is_default": False,
-                            "label": "Green",
-                            "sort_order": 0,
-                            "value_data": {},
-                            "id": 0
-                        }
-                    ]
-                }
-                url = f"{self.base_url}products/{new_product_id}/options"
-                response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-
-                if response.status_code != 200: continue    # Can't add option
-                option = response.json()
-
-                option_id = option['data']['id']
-                value_id = option['data']['option_values'][0]['id']
-                
-                # Create variations in BigCommerce
-                for variation in variations:
-                    price = variation['inShopsPrice']
-                    sale_price = variation['wholesalePrice']
-                    retail_price = variation['retailPrice']
-                    sku = variation['sku']
-                    width = variation['width']
-                    height = variation['height']
-                    depth = variation['depth']
-
-                    # Prepare BigCommerce product data
-                    bigcommerce_data = {
-                        "price": price,
-                        "sale_price": sale_price,
-                        "retail_price": retail_price,
-                        "sku": sku,
-                        "weight": width,
-                        "height": height,
-                        "depth": depth,
-                        "product_id": new_product_id,
-                        "option_values": [
-                            {
-                                "option_id": option_id,
-                                "id": value_id
-                            }
-                        ]
-                    }
-
-                    # Create variation in BigCommerce
-                    url = f"{self.base_url}products/{new_product_id}/variants"
-                    response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-                    if response.status_code == 200:
-                        print(f"Variant for {new_product_id} created successfully.")
-                    else:
-                        print(f"Error creating variation {new_product_id}: {response.text}")
-                    
-                    break
-
-    # Get product images from file and save.
+    # Get product image urls from file and save to BigCommerce.
     def create_images_in_bigcommerce(self, id_map_file, image_file):
+        # Make dictionary with old id and new id
         with open(id_map_file, 'r') as f:
             map_data = json.load(f)
-            
-            # Make dictionary with old id and new id
             id_dict = {}
             for map in map_data:
                 id_dict[str(map['old_id'])] = map['new_id']
@@ -157,7 +80,7 @@ class ProductUpdater:
         with open(image_file, 'r') as f:
             product_image_data = json.load(f)
             
-            for product_image in product_image_data[2100:100001]:
+            for product_image in product_image_data[2100:100000]:
                 old_product_id = product_image['id']
                 new_product_id = id_dict.get(str(old_product_id), 0)
                 if new_product_id == 0: continue
@@ -181,7 +104,75 @@ class ProductUpdater:
                         print(f"Error creating image {new_product_id}: {response.text}")
                     
                     break
+    
+    # Get product variations from BigBuy and create in BigCommerce
+    def create_variations_in_bigcommerce(self, variation_file):
+        with open(variation_file, 'r') as f:
+            variation_data = json.load(f)
+            variation_dict = dict(variation_data)
+            for index, product_id in enumerate(variation_dict.keys()):
+                variations = variation_dict[product_id]
+                
+                for variation in variations:
+                    # Create project option
+                    bigcommerce_data = {
+                        "display_name": "Default Ooption",
+                        "type": "radio_buttons",
+                        "option_values": [
+                            {
+                                "is_default": False,
+                                "label": "Green",
+                                "sort_order": 0,
+                                "value_data": {},
+                                "id": 0
+                            }
+                        ]
+                    }
+                    url = f"{self.base_url}products/{product_id}/options"
+                    response = requests.post(url, headers=self.headers, json=bigcommerce_data)
 
+                    if response.status_code != 200: continue    # Can't add option
+                    option = response.json()
+
+                    option_id = option['data']['id']
+                    value_id = option['data']['option_values'][0]['id']
+                    
+                    # Create variations in BigCommerce
+                    price = variation['inShopsPrice']
+                    sale_price = variation['wholesalePrice']
+                    retail_price = variation['retailPrice']
+                    sku = variation['sku']
+                    width = variation['width']
+                    height = variation['height']
+                    depth = variation['depth']
+
+                    # Prepare BigCommerce variation data
+                    bigcommerce_data = {
+                        "price": price,
+                        "sale_price": sale_price,
+                        "retail_price": retail_price,
+                        "sku": sku,
+                        "weight": width,
+                        "height": height,
+                        "depth": depth,
+                        "product_id": product_id,
+                        "option_values": [
+                            {
+                                "option_id": option_id,
+                                "id": value_id
+                            }
+                        ]
+                    }
+
+                    # Create variation in BigCommerce
+                    url = f"{self.base_url}products/{product_id}/variants"
+                    response = requests.post(url, headers=self.headers, json=bigcommerce_data)
+                    if response.status_code == 200:
+                        print(f"Variant for {product_id} created successfully.")
+                    else:
+                        print(f"Error creating variation {product_id}: {response.text}")
+                    
+                    break
     
     def update_bigcommerce_object(self, object_type, object_id, data):
         url = f"{self.base_url}{object_type}/{object_id}"
