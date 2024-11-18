@@ -48,7 +48,7 @@ class ProductUpdater:
                 # product_price = data['data'][0]['retail_price']
                 # print(product_sku, product_weight, product_price)
                 print(data)
-                continue
+                break
 
                 # Prepare BigCommerce product data
                 bigcommerce_data = {
