@@ -147,7 +147,7 @@ def get_new_product_id(pinfo_file):
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping124.json"
+    file_path = f"ID_Mapping24.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 
