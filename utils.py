@@ -107,7 +107,7 @@ def delete_images():
     with open(image_file, 'r') as f:
         image_data = json.load(f)
         
-        for image in image_data[350:2100]:
+        for image in image_data[486:2100]:
             new_product_id = image['new_id']
 
             # Get images for the product
