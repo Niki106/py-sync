@@ -60,21 +60,13 @@ class ProductUpdater:
                     print(f"Error creating product {product_sku}: {response.text}")
 
     # Get product image urls from file and save to BigCommerce.
-    def create_images_in_bigcommerce(self, id_map_file, image_file):
-        # Make dictionary with old id and new id
-        with open(id_map_file, 'r') as f:
-            map_data = json.load(f)
-            id_dict = {}
-            for map in map_data:
-                id_dict[str(map['old_id'])] = map['new_id']
-
+    def create_images_in_bigcommerce(self, image_file, i):
         with open(image_file, 'r') as f:
             product_image_data = json.load(f)
-            
-            for product_image in product_image_data[2100:100000]:
-                old_product_id = product_image['id']
-                new_product_id = id_dict.get(str(old_product_id), 0)
-                if new_product_id == 0: continue
+            start = i * 10
+            end = i * 10 + 10
+            for product_image in product_image_data[start:end]:
+                new_product_id = product_image['new_id']
                 
                 # Create product image in BigCommerce
                 images = product_image['images']
@@ -87,14 +79,14 @@ class ProductUpdater:
                         "is_thumbnail": is_thumbnail
                     }
 
-                    url = f"{self.base_url}products/{new_product_id}/images"
-                    response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-                    if response.status_code == 200:
-                        print(f"Image for {new_product_id} created successfully.")
-                    else:
+
+                    try:
+                        url = f"{self.base_url}products/{new_product_id}/images"
+                        response = requests.post(url, headers=self.headers, json=bigcommerce_data)
+                        if response.status_code == 200:
+                            print(f"Image for {new_product_id} created successfully.")
+                    except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
                         print(f"Error creating image {new_product_id}: {response.text}")
-                    
-                    break
     
     # Get product variations from BigBuy and create in BigCommerce
     def create_variations_in_bigcommerce(self, variation_file):

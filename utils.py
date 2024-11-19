@@ -1,6 +1,7 @@
 import json
-import argparse
 import requests
+import threading
+import time
 
 STORE_HASH = "5byitdbjtb"
 API_TOKEN = "t4iu0pxpzxck0h5azrwmy8u3w9994q2"
@@ -78,7 +79,7 @@ def merge_map_image():
         image_data = json.load(f)
         
         new_image_data = []
-        for product_image in image_data:
+        for index, product_image in enumerate(image_data):
             old_product_id = product_image['id']
             new_product_id = id_dict.get(str(old_product_id), 0)
             if new_product_id == 0: continue
@@ -87,7 +88,8 @@ def merge_map_image():
                 {
                     "id": product_image['id'],
                     "new_id": new_product_id,
-                    "images": product_image['images']
+                    "images": product_image['images'],
+                    "index": index
                 }
             )
 
@@ -95,7 +97,36 @@ def merge_map_image():
     with open(file_path, 'w') as f:
         json.dump(new_image_data, f, indent=4)    
 
+def delete_images():
+    image_file = "ImagesWithID.json"
+    base_url = f"https://api.bigcommerce.com/stores/{STORE_HASH}/v3/catalog/"
+    headers = {
+        "X-Auth-Token": f"{API_TOKEN}"
+    }
 
+    with open(image_file, 'r') as f:
+        image_data = json.load(f)
+        
+        for image in image_data[350:2100]:
+            new_product_id = image['new_id']
+
+            # Get images for the product
+            url = f"{base_url}products/{new_product_id}/images"
+            response = requests.get(url, headers=headers)
+            items = response.json()['data']
+
+            # Delete the images
+            for item in items:
+                image_id = item['id']
+
+                try:
+                    response.raise_for_status()  # Raise an exception for error HTTP statuses
+                    url = f"{base_url}products/{new_product_id}/images/{image_id}"
+                    response = requests.delete(url, headers=headers)
+                    if response.status_code == 204:
+                        print(f"Successfully deleted images for {new_product_id}")
+                except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
+                    print(f"Error deleting images for {new_product_id}: {str(e)}")                
 
 def get_sku(n):
     file_path = f"ProductsInfo.json"
@@ -217,17 +248,9 @@ def sort_variation():
     with open(file_path, 'w') as f:
         json.dump(sorted_data, f, indent=4)
 
+
 def main():
-    # filter_product_info()
-    # get_sku(args.number)  
-
-    # productInfoFile = "ProductsInfo.json"
-    # get_new_product_id(productInfoFile)
-
-    # merge_mappings()
-    # merge_map_image()
-
-    filter_product()
+    delete_images()
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='A simple argument parser')
