@@ -13,7 +13,7 @@ if __name__ == '__main__':
     prodcut_info_file = "ProductsInfo.json"
     image_file = "ImagesWithID.json"
     id_map_file = "ID_Mapping.json"
-    variation_file = "VariationsSorted.json"
+    variation_file = "Variations3.json"
 
     # data = updater.insert_products_to_bigcommerce(product_file, prodcut_info_file)
     data = updater.create_images_in_bigcommerce(image_file)

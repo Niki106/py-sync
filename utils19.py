@@ -134,7 +134,7 @@ def get_new_product_id(pinfo_file):
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[280000:290000]:
+        for product_info in pinfo_data[190000:200000]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
 
@@ -148,7 +148,7 @@ def get_new_product_id(pinfo_file):
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping28.json"
+    file_path = f"ID_Mapping19.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 

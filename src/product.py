@@ -90,33 +90,38 @@ class ProductUpdater:
         with open(variation_file, 'r') as f:
             variation_data = json.load(f)
             variation_dict = dict(variation_data)
-            for index, product_id in enumerate(variation_dict.keys()):
+            variation_list = list(variation_dict)
+            for product_id in variation_list[0:1]:
                 variations = variation_dict[product_id]
                 
-                for variation in variations:
+                for index, variation in enumerate(variations):
                     # Create project option
                     bigcommerce_data = {
-                        "display_name": "Default Ooption",
+                        "display_name": f"Option_{index}",
                         "type": "radio_buttons",
                         "option_values": [
                             {
                                 "is_default": False,
-                                "label": "Green",
+                                "label": f"Green {index}",
                                 "sort_order": 0,
                                 "value_data": {},
                                 "id": 0
                             }
                         ]
                     }
+
                     url = f"{self.base_url}products/{product_id}/options"
                     response = requests.post(url, headers=self.headers, json=bigcommerce_data)
 
-                    if response.status_code != 200: continue    # Can't add option
+                    if response.status_code != 200: 
+                        print(response.status_code, response.text)
+                        continue    # Can't add option
+
                     option = response.json()
 
                     option_id = option['data']['id']
                     value_id = option['data']['option_values'][0]['id']
-                    
+                     
                     # Create variations in BigCommerce
                     price = variation['inShopsPrice']
                     sale_price = variation['wholesalePrice']
@@ -144,6 +149,8 @@ class ProductUpdater:
                         ]
                     }
 
+                    print(index, bigcommerce_data)
+                   
                     # Create variation in BigCommerce
                     url = f"{self.base_url}products/{product_id}/variants"
                     response = requests.post(url, headers=self.headers, json=bigcommerce_data)
@@ -151,8 +158,9 @@ class ProductUpdater:
                         print(f"Variant for {product_id} created successfully.")
                     else:
                         print(f"Error creating variation {product_id}: {response.text}")
-                    
-                    break
+                                        
+                # Do one product only
+                break
     
     def update_bigcommerce_object(self, object_type, object_id, data):
         url = f"{self.base_url}{object_type}/{object_id}"

@@ -79,17 +79,19 @@ def merge_map_image():
         image_data = json.load(f)
         
         new_image_data = []
-        for index, product_image in enumerate(image_data):
+        count = -1
+        for product_image in image_data:
             old_product_id = product_image['id']
             new_product_id = id_dict.get(str(old_product_id), 0)
             if new_product_id == 0: continue
 
+            count = count + 1
             new_image_data.append(
                 {
                     "id": product_image['id'],
                     "new_id": new_product_id,
                     "images": product_image['images'],
-                    "index": index
+                    "index": count
                 }
             )
 
@@ -232,4 +234,4 @@ def filter_variation():
         json.dump(sorted_data, f, indent=4)
 
 if __name__ == "__main__":
-    filter_variation()
+    merge_map_image()
