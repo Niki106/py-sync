@@ -60,12 +60,10 @@ class ProductUpdater:
                     print(f"Error creating product {product_sku}: {response.text}")
 
     # Get product image urls from file and save to BigCommerce.
-    def create_images_in_bigcommerce(self, image_file, i):
+    def create_images_in_bigcommerce(self, image_file):
         with open(image_file, 'r') as f:
             product_image_data = json.load(f)
-            start = i * 10
-            end = i * 10 + 10
-            for product_image in product_image_data[55:10000]:
+            for product_image in product_image_data[10000:200000]:
                 new_product_id = product_image['new_id']
                 
                 # Create product image in BigCommerce

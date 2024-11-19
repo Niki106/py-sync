@@ -189,78 +189,47 @@ def get_new_product_id(pinfo_file, image_file):
         json.dump(id_mapping, f, indent=4)
 
 def filter_variation():
-    variation_file = f"{productPath}\\VariationsNew.json"
-    id_map_File = "ID_Mapping.json"
-
-    # Make dictionary with old id and new id
-    with open(id_map_File, 'r') as f:
+    id_map_file = f"{productPath}\\ID_Mapping.json"
+    variation_file = f"{productPath}\\Variations.json"
+    
+    # Make dictionary for ID mapping
+    with open(id_map_file, 'r') as f:
         map_data = json.load(f)
-        id_map = {}
+        id_dict = {}
         for map in map_data:
-            id_map[str(map['old_id'])] = map['new_id']
+            id_dict[str(map['old_id'])] = map['new_id']
 
-    merged_data = []
+    # Reverse order and filter some fields
     with open(variation_file, 'r') as f:
         data = json.load(f)
-        filtered_data = []
-        for index, item in enumerate(data):
-            new_product_id = item['product']
-            filtered_item = {
-                "id": item['id'], 
-                "product": new_product_id,
+        
+        sorted_data = dict()
+        
+        for _, item in enumerate(reversed(data)):
+            product_id = item['product']
+            new_product_id = id_dict.get(str(product_id), 0)
+            if new_product_id == 0: 
+                print(f"No new product id for {product_id}.")
+                continue
+            
+            variation = {
                 "inShopsPrice": item['inShopsPrice'],
                 "wholesalePrice": item['wholesalePrice'],
                 "retailPrice": item['retailPrice'],
                 "sku": item['sku'],
                 "width": item['width'],
                 "height": item['height'],
-                "depth": item['depth'],
-                "index": index
+                "depth": item['depth']
             }
-            filtered_data.append(filtered_item)
-        merged_data.extend(filtered_data)
+
+            if str(new_product_id) in sorted_data.keys():
+                sorted_data[str(new_product_id)].append(variation)
+            else:
+                sorted_data[str(new_product_id)] = [variation] 
         
-    file_path = f"{productPath}\\VariationsNew.json"
-    with open(file_path, 'w') as f:
-        json.dump(merged_data, f, indent=4)
-
-def sort_variation():
-    variation_file = "VariationsNew.json"
-
-    sorted_data = dict()
-
-    def add_variation(product_id, variation):
-        if str(product_id) in sorted_data.keys():
-            sorted_data[str(product_id)].append(variation)
-        else:
-           sorted_data[str(product_id)] = [variation] 
-
-    with open(variation_file, 'r') as f:
-        variations = json.load(f)
-        for variation in variations:
-            product_id = variation['product']
-            filtered_varition = {
-                "inShopsPrice": variation['inShopsPrice'],
-                "wholesalePrice": variation['wholesalePrice'],
-                "retailPrice": variation['retailPrice'],
-                "sku": variation['sku'],
-                "width": variation['width'],
-                "height": variation['height'],
-                "depth": variation['depth']
-            }
-            add_variation(product_id, filtered_varition)
-        
-    file_path = f"VariationsSorted.json"
+    file_path = f"{productPath}\\Variations3.json"
     with open(file_path, 'w') as f:
         json.dump(sorted_data, f, indent=4)
 
-
-def main():
-    delete_images()
-
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description='A simple argument parser')
-    # parser.add_argument('-n', '--number', type=int, required=True, help='Number')
-    # args = parser.parse_args()
-    # main(args)
-    main()
+    filter_variation()
