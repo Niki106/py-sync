@@ -133,7 +133,7 @@ def get_new_product_id(pinfo_file):
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[200000:210001]:
+        for product_info in pinfo_data[200000:210000]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
 
@@ -147,7 +147,7 @@ def get_new_product_id(pinfo_file):
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping120.json"
+    file_path = f"ID_Mapping20.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 
@@ -221,13 +221,13 @@ def main():
     # filter_product_info()
     # get_sku(args.number)  
 
-    # productInfoFile = "ProductsInfo.json"
-    # get_new_product_id(productInfoFile)
+    productInfoFile = "ProductsInfo.json"
+    get_new_product_id(productInfoFile)
 
     # merge_mappings()
     # merge_map_image()
 
-    filter_product()
+    # filter_product()
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='A simple argument parser')

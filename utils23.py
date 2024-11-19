@@ -133,7 +133,7 @@ def get_new_product_id(pinfo_file):
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[230000:240001]:
+        for product_info in pinfo_data[230000:240000]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
 
