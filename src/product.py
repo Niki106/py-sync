@@ -65,7 +65,7 @@ class ProductUpdater:
             product_image_data = json.load(f)
             start = i * 10
             end = i * 10 + 10
-            for product_image in product_image_data[start:end]:
+            for product_image in product_image_data[55:10000]:
                 new_product_id = product_image['new_id']
                 
                 # Create product image in BigCommerce
