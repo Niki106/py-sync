@@ -79,7 +79,6 @@ class ProductUpdater:
                         "is_thumbnail": is_thumbnail
                     }
 
-
                     try:
                         url = f"{self.base_url}products/{new_product_id}/images"
                         response = requests.post(url, headers=self.headers, json=bigcommerce_data)
