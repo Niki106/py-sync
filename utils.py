@@ -111,6 +111,7 @@ def delete_images():
             new_product_id = image['new_id']
 
             # Get images for the product
+            time.sleep(1)
             url = f"{base_url}products/{new_product_id}/images"
             response = requests.get(url, headers=headers)
             if (response.status_code == 404): continue
