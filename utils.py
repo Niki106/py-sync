@@ -153,6 +153,7 @@ def get_new_product_id(pinfo_file, image_file):
     def fetch_by_sku(product_sku):
         url = f"{base_url}products?keyword={product_sku}"
         try:
+            time.sleep(1)
             response = requests.get(url, headers=headers)
             response.raise_for_status()  # Raise an exception for error HTTP statuses
             product_data = response.json()

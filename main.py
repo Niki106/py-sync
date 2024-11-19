@@ -18,19 +18,19 @@ if __name__ == '__main__':
     variation_file = "VariationsSorted.json"
 
     # data = updater.insert_products_to_bigcommerce(product_file, prodcut_info_file)
-    # data = updater.create_images_in_bigcommerce(image_file, 0)
+    data = updater.create_images_in_bigcommerce(image_file, 0)
     # data = updater.create_variations_in_bigcommerce(variation_file)
 
-    threads = []
-    for i in range(1, 5):
-        t = threading.Thread(target=updater.create_images_in_bigcommerce, args=(image_file, i))
-        threads.append(t)
-        t.start()
+    # threads = []
+    # for i in range(1, 5):
+    #     t = threading.Thread(target=updater.create_images_in_bigcommerce, args=(image_file, i))
+    #     threads.append(t)
+    #     t.start()
 
-    # Wait for all threads to finish
-    for t in threads:
-        t.join()
+    # # Wait for all threads to finish
+    # for t in threads:
+    #     t.join()
 
-    print("All threads finished")
+    # print("All threads finished")
     
     
