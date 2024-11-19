@@ -113,6 +113,7 @@ def delete_images():
             # Get images for the product
             url = f"{base_url}products/{new_product_id}/images"
             response = requests.get(url, headers=headers)
+            if (response.status_code == 404): continue
             items = response.json()['data']
 
             # Delete the images
