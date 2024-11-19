@@ -221,13 +221,13 @@ def main():
     # filter_product_info()
     # get_sku(args.number)  
 
-    # productInfoFile = "ProductsInfo.json"
-    # get_new_product_id(productInfoFile)
+    productInfoFile = "ProductsInfo.json"
+    get_new_product_id(productInfoFile)
 
     # merge_mappings()
     # merge_map_image()
 
-    filter_product()
+    # filter_product()
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='A simple argument parser')
