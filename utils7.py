@@ -2,7 +2,6 @@ import json
 import requests
 import time
 
-
 STORE_HASH = "5byitdbjtb"
 API_TOKEN = "t4iu0pxpzxck0h5azrwmy8u3w9994q2"
 
@@ -135,7 +134,7 @@ def get_new_product_id(pinfo_file):
     with open(pinfo_file, 'r') as f:
         pinfo_data = json.load(f)
         
-        for product_info in pinfo_data[120000:130000]:
+        for product_info in pinfo_data[70000:80000]:
             old_product_id = product_info['id']
             product_sku = product_info['sku']
 
@@ -149,7 +148,7 @@ def get_new_product_id(pinfo_file):
             print(old_product_id, new_product_id)
 
 
-    file_path = f"ID_Mapping12.json"
+    file_path = f"ID_Mapping7.json"
     with open(file_path, 'w') as f:
         json.dump(id_mapping, f, indent=4)
 
