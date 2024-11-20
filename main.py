@@ -16,7 +16,7 @@ if __name__ == '__main__':
     variation_file = "Variations3.json"
 
     # data = updater.insert_products_to_bigcommerce(product_file, prodcut_info_file)
-    # data = updater.create_images_in_bigcommerce(image_file)
-    data = updater.create_variations_in_bigcommerce(variation_file)
+    data = updater.create_images_in_bigcommerce(image_file)
+    # data = updater.create_variations_in_bigcommerce(variation_file)
     
     
