@@ -91,7 +91,7 @@ class ProductUpdater:
             variation_data = json.load(f)
             variation_dict = dict(variation_data)
             variation_list = list(variation_dict)
-            for product_id in variation_list[0:1]:
+            for product_id in variation_list:
                 variations = variation_dict[product_id]
 
                 # Create project option

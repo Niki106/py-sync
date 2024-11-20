@@ -233,5 +233,14 @@ def filter_variation():
     with open(file_path, 'w') as f:
         json.dump(sorted_data, f, indent=4)
 
+def count_variation():
+    variation_file = "Variations3.json"
+    with open(variation_file, 'r') as f:
+        variation_data = json.load(f)
+        variation_dict = dict(variation_data)
+        variation_list = list(variation_dict)
+
+        print("Count: ", len(variation_list))
+
 if __name__ == "__main__":
-    merge_map_image()
+    count_variation()
