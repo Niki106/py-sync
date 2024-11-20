@@ -57,12 +57,12 @@ def merge_images():
 def merge_mappings():
     merged_data = []
     for i in range(30):
-        file_path = f"{productPath}\\New\\ID_Mapping{i}.json"
+        file_path = f"{productPath}\\ID_Mapping{i}.json"
         with open(file_path, 'r') as f:
             data = json.load(f)
             merged_data.extend(data)
         
-    file_path = f"{productPath}\\New\\ID_Mapping.json"
+    file_path = f"{productPath}\\ID_Mapping.json"
     with open(file_path, 'w') as f:
         json.dump(merged_data, f, indent=4)
 

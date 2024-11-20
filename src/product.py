@@ -63,7 +63,7 @@ class ProductUpdater:
     def create_images_in_bigcommerce(self, image_file):
         with open(image_file, 'r') as f:
             product_image_data = json.load(f)
-            for product_image in product_image_data[10000:96930]:
+            for product_image in product_image_data[9554:100000]:
                 new_product_id = product_image['new_id']
                 
                 # Create product image in BigCommerce
