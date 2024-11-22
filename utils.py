@@ -241,6 +241,10 @@ def count_variation():
         variation_list = list(variation_dict)
 
         print("Count: ", len(variation_list))
+ 
+import os
 
 if __name__ == "__main__":
     count_variation()
+    # command = "python D:\\Work\\Python\\Abdulrahman\\Code\\py-sync\\main.py"
+    # os.system(command)

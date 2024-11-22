@@ -17,7 +17,7 @@ class ProductUpdater:
         }
 
     # Read products from file and save to BigCommerce.
-    def insert_products_to_bigcommerce(self, product_file, product_info_file):
+    def create_products_in_bigcommerce(self, product_file, product_info_file):
         with open(product_file, 'r') as f:
             product_data = json.load(f)
             
@@ -59,131 +59,7 @@ class ProductUpdater:
                 else:
                     print(f"Error creating product {product_sku}: {response.text}")
 
-    # Get product image urls from file and save to BigCommerce.
-    def create_images_in_bigcommerce(self, image_file):
-        with open(image_file, 'r') as f:
-            product_image_data = json.load(f)
-            for product_image in product_image_data[9554:100000]:
-                new_product_id = product_image['new_id']
-                
-                # Create product image in BigCommerce
-                images = product_image['images']
-                for image in images:
-                    img_url = image['url']
-                    is_thumbnail = True
-                    
-                    bigcommerce_data = {
-                        "image_url": img_url,
-                        "is_thumbnail": is_thumbnail
-                    }
 
-                    try:
-                        url = f"{self.base_url}products/{new_product_id}/images"
-                        response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-                        if response.status_code == 200:
-                            print(f"Image for {new_product_id} created successfully.")
-                    except (json.JSONDecodeError, requests.exceptions.RequestException) as e:
-                        print(f"Error creating image {new_product_id}: {response.text}")
-    
-    # Get product variations from BigBuy and create in BigCommerce
-    def create_variations_in_bigcommerce(self, variation_file):
-        with open(variation_file, 'r') as f:
-            variation_data = json.load(f)
-            variation_dict = dict(variation_data)
-            variation_list = list(variation_dict)
-            for product_id in variation_list:
-                variations = variation_dict[product_id]
-
-                # Create project option
-                bigcommerce_data = {
-                    "display_name": f"Default Option",
-                    "type": "radio_buttons",
-                    "option_values": [
-                        {
-                            "is_default": False,
-                            "label": f"WAge",
-                            "sort_order": 0,
-                            "value_data": {},
-                            "id": 0
-                        }
-                    ]
-                }
-
-                url = f"{self.base_url}products/{product_id}/options"
-                response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-                if response.status_code != 200: 
-                    print(response.status_code, response.text)
-                    continue    # Can't add option
-
-                option = response.json()
-
-                option_id = option['data']['id']
-                value_id = option['data']['option_values'][0]['id']
-                                            
-                for index, variation in enumerate(variations):
-                    # # Create an option value for this variant
-                    # bigcommerce_data = {
-                    #     "label": f"Age {index}",
-                    #     "sort_order": 0,
-                    #     "value_data": {
-                    #         "age": index
-                    #     },
-                    #     "is_default": False
-                    # }
-
-                    # url = f"{self.base_url}products/{product_id}/options/{option_id}/values"
-                    # response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-                    # value = response.json()
-                    # value_id = value['data']['id']
-                                        
-                    # Create variations in BigCommerce
-                    price = variation['inShopsPrice']
-                    sale_price = variation['wholesalePrice']
-                    retail_price = variation['retailPrice']
-                    sku = variation['sku']
-                    width = variation['width']
-                    height = variation['height']
-                    depth = variation['depth']
-
-                    # Prepare BigCommerce variation data
-                    bigcommerce_data = {
-                        "price": price,
-                        "sale_price": sale_price,
-                        "retail_price": retail_price,
-                        "sku": sku,
-                        "weight": width,
-                        "height": height,
-                        "depth": depth,
-                        "product_id": product_id,
-                        "option_values": [
-                            {
-                                "option_id": option_id,
-                                "id": value_id
-                            }
-                        ]
-                    }
-
-                    # Create variation in BigCommerce
-                    url = f"{self.base_url}products/{product_id}/variants"
-                    response = requests.post(url, headers=self.headers, json=bigcommerce_data)
-                    if response.status_code == 200:
-                        print(f"Variant for {product_id} created successfully.")
-                    else:
-                        print(f"Error creating variation {product_id}: {response.text}")
-                                        
-                    # Do one variation only
-                    break
-    
-    def update_bigcommerce_object(self, object_type, object_id, data):
-        url = f"{self.base_url}{object_type}/{object_id}"
-        headers = {
-            "Authorization": f"Bearer {self.api_token}",
-            "Content-Type": "application/json"
-        }
-        response = requests.put(url, headers=headers, json=data)
-        response.raise_for_status()  # Raise an exception for error HTTP statuses
-
-    def update_object(self, object_type, object_id):
         bigbuy_data = self.fetch_data_from_bigbuy(object_id)
         # Map BigBuy data to BigCommerce fields
         bigcommerce_data = {
@@ -192,3 +68,65 @@ class ProductUpdater:
             # ... other fields as needed
         }
         self.update_bigcommerce_object(object_type, object_id, bigcommerce_data)
+
+    # Get new products from BigBuy for a parent taxonomy
+    def get_new_products(self, parent_taxonomy):
+        url = f"{self.bigbuy_base_url}new-products?parentTaxonomy={parent_taxonomy}?isoCode=en"
+            
+        try:
+            response = requests.get(url, headers=self.bigbuy_headers)
+            response.raise_for_status()
+            data = response.json()
+            return data
+        except requests.exceptions.HTTPError as err:
+            print(f"Error: {err}")
+            return None
+        except json.JSONDecodeError as e:
+            print(f"Error parsing JSON: {e}")
+            return None
+
+    # Get product info from BigBuy
+    def get_product_name(self, sku):
+        url = f"{self.bigbuy_base_url}productinformationbysku/{sku}?isoCode=en"
+            
+        try:
+            response = requests.get(url, headers=self.bigbuy_headers)
+            response.raise_for_status()
+            data = response.json()
+
+            if len(list(data)) < 1: 
+                print("Empty result")
+                return ''
+            
+            return data[0]['name']
+        except requests.exceptions.HTTPError as err:
+            print(f"Error: {err}")
+            return ''
+        except json.JSONDecodeError as e:
+            print(f"Error parsing JSON: {e}")
+            return ''
+    
+    # Insert the product to BigCommerce.
+    def insert_product(self, product):
+        product_sku = product['sku']
+        product_name = self.get_product_name(product_sku)
+        if product_name == '': return
+
+        bigcommerce_data = {
+            "name": self.get_product_name(product_sku),
+            "sku": product_sku,
+            "categories": [2158],
+            "price": product['retailPrice'],
+            "weight": product['weight'],
+            "type": 'physical',
+            "availability": 'available'
+        }
+
+        # Create product in BigCommerce
+        url = f"{self.base_url}products"
+        response = requests.post(url, headers=self.headers, json=bigcommerce_data)
+        if response.status_code == 200:
+            print(f"Product {product_sku} created successfully.")
+        else:
+            print(f"Error creating product {product_sku}: {response.text}")
+
