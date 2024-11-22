@@ -1,12 +1,11 @@
 import sys
-sys.path.append('src')
 
-from product import ProductUpdater
-from image import ImageUpdater
-from variant import VariantUpdater
-from taxonomy import TaxonomyUpdater
+from src.product import ProductUpdater
+from src.image import ImageUpdater
+from src.variant import VariantUpdater
+from src.taxonomy import TaxonomyUpdater
 
-from synchronizer import Synchronizer
+from src.synchronizer import Synchronizer
 
 STORE_HASH = "5byitdbjtb"
 API_TOKEN = "t4iu0pxpzxck0h5azrwmy8u3w9994q2"
