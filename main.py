@@ -1,10 +1,5 @@
 import sys
 
-from src.product import ProductUpdater
-from src.image import ImageUpdater
-from src.variant import VariantUpdater
-from src.taxonomy import TaxonomyUpdater
-
 from src.synchronizer import Synchronizer
 
 STORE_HASH = "5byitdbjtb"

@@ -1,10 +1,9 @@
 import sys
-sys.path.append('src')
 
-from taxonomy import TaxonomyUpdater
-from product import ProductUpdater
-from image import ImageUpdater
-from variant import VariantUpdater
+from src.product import ProductUpdater
+from src.image import ImageUpdater
+from src.variant import VariantUpdater
+from src.taxonomy import TaxonomyUpdater
 
 class Synchronizer:
     def __init__(self, store_hash, api_token, bigbuy_api_key):
