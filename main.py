@@ -23,8 +23,8 @@ def main():
     if action == 'product':
         synchronizer.update_products()
 
-    if action == 'category':
-        synchronizer.update_categories()
+    if action == 'joe':    # Test cron job
+        print("Hello, I am from cron")
 
 if __name__ == '__main__':
     main()
